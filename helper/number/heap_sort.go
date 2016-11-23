@@ -41,7 +41,7 @@ func localMaxHeap(data []int, root int) {
 		localMaxHeap(data, biggest)
 	}
 }
-localMaxHeap
+
 // 获取元素的左节点
 func getLeft(index int) int {
 	left := 2*index + 1
