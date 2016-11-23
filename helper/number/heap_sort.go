@@ -1,29 +1,47 @@
 package number
 
-import "math"
-
 // HeapSort : 堆排序
 func HeapSort(data []int) {
-	if len(data) == 0 {
+	if len(data) <= 1 {
 		return
 	}
-	startIndex := len(data) - 1
-	for startIndex >= 0 {
-		parentIndex := getParentIndex(startIndex)
-		if data[parentIndex] < data[startIndex] {
-			swapParentAndChild(data, parentIndex, startIndex)
-		}
-		startIndex--
+	maxIndex := len(data) - 1
+	buildAllMaxHeap(data)
+	for i := len(data) - 1; i >= 0; i-- {
+		data[0], data[maxIndex] = data[maxIndex], data[0]
+		localMaxHeap(data[:maxIndex], 0)
+		maxIndex--
 	}
-	//fmt.Printf("%v\n", data)
-	HeapSort(data[1:])
 }
 
-//交换父子节点
-func swapParentAndChild(data []int, parent, child int) {
-	data[parent], data[child] = data[child], data[parent]
+//全局创建最大堆
+func buildAllMaxHeap(data []int) {
+	//从最后一颗树的根节点开始处理
+	for i := (len(data) - 1) / 2; i >= 0; i-- {
+		localMaxHeap(data, i)
+	}
 }
 
+//每一颗小树中，要保持最大堆
+func localMaxHeap(data []int, root int) {
+	left := getLeft(root)
+	right := getRight(root)
+
+	biggest := root
+
+	if left < len(data) && data[left] > data[biggest] {
+		biggest = left
+	}
+	if right < len(data) && data[right] > data[biggest] {
+		biggest = right
+	}
+
+	if biggest != root {
+		data[root], data[biggest] = data[biggest], data[root]
+		localMaxHeap(data, biggest)
+	}
+}
+localMaxHeap
 // 获取元素的左节点
 func getLeft(index int) int {
 	left := 2*index + 1
@@ -46,11 +64,3 @@ func getParentIndex(index int) int {
 	}
 	return index / 2
 }
-
-// 返回完全二叉树的层数
-func getLevel(data []int) int {
-	return int(math.Ceil(math.Sqrt(float64(len(data)))))
-}
-
-// n ： 层，n >= 1b
-// 完全二叉树：最多结点： 2^n - 1

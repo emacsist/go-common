@@ -6,7 +6,7 @@ import (
 
 import "testing"
 
-const n = 11
+const n = 100000
 
 func TestHeapSort(t *testing.T) {
 	data := GenerateInt(n, n)
